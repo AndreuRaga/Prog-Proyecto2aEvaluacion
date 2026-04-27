@@ -7,6 +7,23 @@ class GestorPDO {
         $this->db = Connection::getInstance()->getConn();
     }
 
+    //Gestion de personajes
+    public function obtenerPersonajes() {
+        $sql = "SELECT * FROM Personajes";
+        $rtdo = $this->db->query($sql);
+        $arrayPersonajes = [];
+
+        while ($value = $rtdo->fetch(PDO::FETCH_ASSOC)) {
+            if ($value['clase'] === 'Guerrero') {
+                $personaje = new Guerrero($value['nombre'], $value['vida'], $value['nivel'], $value['fuerza'], $value['arma'], $value['id']);
+            } else {
+                $personaje = new Mago($value['nombre'], $value['vida'], $value['nivel'], $value['mana'], $value['elemento'], $value['id']);
+            }
+            $arrayPersonajes[] = $personaje;
+        }
+        return $arrayPersonajes;
+    }
+
     //Gestión de usuarios
     public function registrarUsuario(Usuario $usuario) {
         try {
