@@ -36,4 +36,30 @@ class PersonajeController {
 
         include 'views/agregar.php';
     }
+
+    public function editar() {
+        $id = $_GET['id'] ?? null;
+        $personaje = $this->gestor->buscarPersonaje($id);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $personaje->setNombre($_POST['nombre']);
+            $personaje->setVida($_POST['vida']);
+            $personaje->setNivel($_POST['nivel']);
+
+            if ($personaje instanceof Guerrero) {
+                $personaje->setFuerza($_POST['fuerza']);
+                $personaje->setArma($_POST['arma']);
+            } else {
+                $personaje->setMana($_POST['mana']);
+                $personaje->setElemento($_POST['elemento']);
+            }
+
+            $this->gestor->actualizarPersonaje($personaje);
+
+            header('Location: index.php');
+            exit();
+        }
+
+        include 'views/editar.php';
+    }
 }

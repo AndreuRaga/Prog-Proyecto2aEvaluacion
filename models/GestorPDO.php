@@ -54,6 +54,44 @@ class GestorPDO {
         }
     }
 
+    public function buscarPersonaje($id) {
+        $sql = "SELECT * FROM Personajes WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        $stmt->execute();
+        
+        while ($value = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($value['clase'] === 'Guerrero') {
+                $personaje = new Guerrero($value['nombre'], $value['vida'], $value['nivel'], $value['fuerza'], $value['arma'], $value['id']);
+            } else {
+                $personaje = new Mago($value['nombre'], $value['vida'], $value['nivel'], $value['mana'], $value['elemento'], $value['id']);
+            }
+        }
+        return $personaje;
+    }
+
+    public function actualizarPersonaje(Personaje $personaje) {
+        $sql = "UPDATE Personajes SET nombre = :nombre, vida = :vida, nivel = :nivel, fuerza = :fuerza, arma = :arma, mana = :mana, elemento = :elemento WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $personaje->getId());
+        $stmt->bindValue(':nombre', $personaje->getNombre());
+        $stmt->bindValue(':vida', $personaje->getVida());
+        $stmt->bindValue(':nivel', $personaje->getNivel());
+        if ($personaje instanceof Guerrero) {
+            $stmt->bindValue(':fuerza', $personaje->getFuerza());
+            $stmt->bindValue(':arma', $personaje->getArma());
+            $stmt->bindValue(':mana', null);
+            $stmt->bindValue(':elemento', null);
+        } else {
+            $stmt->bindValue(':fuerza', null);
+            $stmt->bindValue(':arma', null);
+            $stmt->bindValue(':mana', $personaje->getMana());
+            $stmt->bindValue(':elemento', $personaje->getElemento());
+        }
+        
+        return $stmt->execute();
+    }
+
     //Gestión de usuarios
     public function registrarUsuario(Usuario $usuario) {
         try {
