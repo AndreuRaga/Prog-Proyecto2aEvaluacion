@@ -8,6 +8,7 @@ class UsuarioController {
 
     public function alta() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nombre = $_POST['nombre'];
             $email = $_POST['email'];
             $passwordPlana = $_POST['password'];
 
@@ -15,12 +16,17 @@ class UsuarioController {
             $passwordHash = password_hash($passwordPlana, PASSWORD_DEFAULT);
             
             //2. Creamos el objeto Usuario (sin ID, porque es nuevo)
-            $nuevoUsuario = new Usuario($email, $passwordHash);
+            $nuevoUsuario = new Usuario($nombre, $email, $passwordHash);
 
             //3. Pasamos el objeto al gestor
             $this->gestor->registrarUsuario($nuevoUsuario);
-            
-            header('Location: index.php?accion=login');
+
+            //4. Iniciamos sesión automáticamente
+            $_SESSION['usuario_id'] = $nuevoUsuario->getId();
+            $_SESSION['usuario_nombre'] = $nuevoUsuario->getNombre();
+            $_SESSION['usuario_email'] = $nuevoUsuario->getEmail();
+
+            header('Location: index.php');
             exit();
         }
 
@@ -39,6 +45,7 @@ class UsuarioController {
             if ($usuario && password_verify($passwordPlana, $usuario->getPassword())) {
                 //Login correcto
                 $_SESSION['usuario_id'] = $usuario->getId();
+                $_SESSION['usuario_nombre'] = $usuario->getNombre();
                 $_SESSION['usuario_email'] = $usuario->getEmail();
                 
                 header('Location: index.php');

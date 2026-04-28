@@ -9,7 +9,7 @@
     <h1>Gestión de personajes</h1>
     <div style="background-color: #f8f9fa; padding: 10px; margin-bottom: 20px;">
         <?php if (isset($_SESSION['usuario_id'])): ?>
-            <p>Bienvenido, <b><?= $_SESSION['usuario_email'] ?></b> | <a href="index.php?accion=logout">Cerrar sesión</a></p>
+            <p>Bienvenido/a, <b><?= $_SESSION['usuario_nombre'] ?></b> | <a href="index.php?accion=logout">Cerrar sesión</a></p>
         <?php else: ?>
             <p><a href="index.php?accion=login">Iniciar sesión</a> | <a href="index.php?accion=alta">Registrarse</a></p>
         <?php endif; ?>

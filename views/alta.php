@@ -6,6 +6,9 @@
 <body>
     <h1>Crear nueva cuenta</h1>
     <form method="post">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required>
+        <br><br>
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
         <br><br>

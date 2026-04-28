@@ -102,10 +102,11 @@ class GestorPDO {
     //Gestión de usuarios
     public function registrarUsuario(Usuario $usuario) {
         try {
-            $sql = "INSERT INTO Usuario (email, password) VALUES (:email, :password)";
+            $sql = "INSERT INTO Usuario (nombre, email, password) VALUES (:nombre, :email, :password)";
             $stmt = $this->db->prepare($sql);
             
             //Usamos los getters del objeto Usuario
+            $stmt->bindValue(':nombre', $usuario->getNombre());
             $stmt->bindValue(':email', $usuario->getEmail());
             $stmt->bindValue(':password', $usuario->getPassword());
 
@@ -125,7 +126,7 @@ class GestorPDO {
         
         //Si encontró algo, creamos y devolvemos un objeto Usuario
         if ($value) {
-            return new Usuario($value['email'], $value['password'], $value['id']);
+            return new Usuario($value['nombre'], $value['email'], $value['password'], $value['id']);
         }
         //Si no existe, devolvemos false o null
         return false;
