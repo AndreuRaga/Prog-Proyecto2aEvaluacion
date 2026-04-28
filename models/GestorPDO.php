@@ -24,6 +24,36 @@ class GestorPDO {
         return $arrayPersonajes;
     }
 
+    public function agregarPersonaje(Personaje $personaje) {
+        try {
+            $sql = "INSERT INTO Personajes (clase, nombre, vida, nivel, fuerza, arma, mana, elemento) 
+                    VALUES (:clase, :nombre, :vida, :nivel, :fuerza, :arma, :mana, :elemento)";
+            $stmt = $this->db->prepare($sql);
+
+            $stmt->bindValue(':nombre', $personaje->getNombre());
+            $stmt->bindValue(':vida', $personaje->getVida());
+            $stmt->bindValue(':nivel', $personaje->getNivel());
+            
+            if ($personaje instanceof Guerrero) {
+                $stmt->bindValue(':clase', 'Guerrero');
+                $stmt->bindValue(':fuerza', $personaje->getFuerza());
+                $stmt->bindValue(':arma', $personaje->getArma());
+                $stmt->bindValue(':mana', null);
+                $stmt->bindValue(':elemento', null);
+            } else {
+                $stmt->bindValue(':clase', 'Mago');
+                $stmt->bindValue(':fuerza', null);
+                $stmt->bindValue(':arma', null);
+                $stmt->bindValue(':mana', $personaje->getMana());
+                $stmt->bindValue(':elemento', $personaje->getElemento());
+            }
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo $e->getMessage() . $e->getCode();
+        }
+    }
+
     //Gestión de usuarios
     public function registrarUsuario(Usuario $usuario) {
         try {
