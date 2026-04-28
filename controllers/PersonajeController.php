@@ -62,4 +62,12 @@ class PersonajeController {
 
         include 'views/editar.php';
     }
+
+    public function eliminar() {
+        $id = $_GET['id'];
+        $this->gestor->eliminarPersonaje($id);
+
+        header('Location: index.php');
+        exit();
+    }
 }

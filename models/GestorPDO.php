@@ -92,6 +92,13 @@ class GestorPDO {
         return $stmt->execute();
     }
 
+    public function eliminarPersonaje($id) {
+        $sql = "DELETE FROM Personajes WHERE id = :id";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id);
+        return $stmt->execute();
+    }
+
     //Gestión de usuarios
     public function registrarUsuario(Usuario $usuario) {
         try {
