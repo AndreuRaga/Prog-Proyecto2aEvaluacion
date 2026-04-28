@@ -66,7 +66,7 @@ class UsuarioController {
         session_destroy();
 
         //Redirigimos al inicio
-        header('Location: index.php?accion=login');
+        header('Location: index.php');
         exit();
     }
 }
