@@ -37,6 +37,7 @@ class UsuarioController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $passwordPlana = $_POST['password'];
+            $recordarme = isset($_POST['recordarme']);
 
             //1. Buscamos al usuario (ahora devuelve un objeto Usuario o false)
             $usuario = $this->gestor->buscarUsuarioPorEmail($email);
@@ -47,6 +48,15 @@ class UsuarioController {
                 $_SESSION['usuario_id'] = $usuario->getId();
                 $_SESSION['usuario_nombre'] = $usuario->getNombre();
                 $_SESSION['usuario_email'] = $usuario->getEmail();
+
+                //3. Gestion de cookies para "Recordarme"
+                if ($recordarme) {
+                    //Creamos un token único (pudes guardarlo en BD para más seguridad)
+                    $token = base64_encode($usuario->getEmail());
+
+                    // Seteamos la cookie: dura 30 días
+                    $this->crearCookie('usuario_login', $token);
+                }
                 
                 header('Location: index.php');
                 exit();
@@ -65,6 +75,15 @@ class UsuarioController {
         //Destruimos la sesión completamente
         session_destroy();
 
+        //Eliminamos la cookie al cerrar sesión
+        if (isset($_COOKIE['usuario_login'])) {
+            $this->eliminarCookie('usuario_login');
+        }
+
+        if (isset($_COOKIE['color_fondo'])) {
+            $this->eliminarCookie('color_fondo');
+        }
+
         //Redirigimos al inicio
         header('Location: index.php');
         exit();
@@ -74,9 +93,29 @@ class UsuarioController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $colorFondo = $_POST['colorPicker'];
             $_SESSION['color_fondo'] = $colorFondo;
+
+            // Guardamos el color en una cookie para persistencia a largo plazo
+            $this->crearCookie('color_fondo', base64_encode($colorFondo));
         }
-        
+
         header('Location: index.php');
         exit();
+    }
+
+    public function crearCookie($nombre, $valor) {
+        setcookie(
+            $nombre,
+            $valor,
+            [
+                'expires' => time() + (86400 * 30), // 30 días
+                'path' => '/',
+                'httponly' => true, // Seguridad: No accesible por JavaScript
+                'samesite' => 'Strict'
+            ]
+        );
+    }
+
+    public function eliminarCookie($nombre) {
+        setcookie($nombre, '', time() - 3600000, '/');
     }
 }

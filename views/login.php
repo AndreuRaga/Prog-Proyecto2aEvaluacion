@@ -15,6 +15,9 @@
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" required>
         <br><br>
+        <input type="checkbox" name="recordarme" id="recordarme">
+        <label for="recordarme">Recordarme en este equipo</label>
+        <br><br>
         <button type="submit">Entrar</button>
     </form>
     <p>¿No tienes cuenta? <a href="index.php?accion=alta">Regístrate aquí</a>.</p>
