@@ -69,4 +69,14 @@ class UsuarioController {
         header('Location: index.php');
         exit();
     }
+
+    public function cambiarFondo() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $colorFondo = $_POST['colorPicker'];
+            $_SESSION['color_fondo'] = $colorFondo;
+        }
+        
+        header('Location: index.php');
+        exit();
+    }
 }

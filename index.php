@@ -19,7 +19,9 @@
         case 'logout':
             $usuarioController->logout();
             break;
-        
+        case 'cambiar_fondo':
+            $usuarioController->cambiarFondo();
+            break;
         //Gestión de personajes
         case 'agregar':
             $personajeController->agregar();
